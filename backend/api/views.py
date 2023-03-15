@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework import viewsets
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
@@ -18,7 +18,7 @@ from .serializers import (IngredientSerializer, RecipeListSerializer,
                           TagSerializer)
 
 
-class IngredientViewSet(ReadOnlyModelViewSet):
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdminOrReadOnly,)
@@ -26,13 +26,13 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     filterset_class = IngredientFilter
 
 
-class TagViewSet(ReadOnlyModelViewSet):
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class RecipeViewSet(ModelViewSet):
+class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
     pagination_class = CustomPagination
@@ -110,7 +110,7 @@ class RecipeViewSet(ModelViewSet):
                 f'{ingredient.measurement_unit}\n'
             )
 
-        response = HttpResponse(shopping_list_text, content_type="text/plain")
+        response = HttpResponse(shopping_list_text, content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename=shopping_list.txt'
         )
