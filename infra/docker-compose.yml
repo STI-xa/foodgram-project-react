@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.3"
 
 services:
   db:
@@ -7,21 +7,24 @@ services:
       - postgresql_value:/var/lib/postgresql/data/
     env_file:
       - ./.env
+
   backend:
-    build: stixaxa/foodgram_backend:latest
+    build: ../backend
     restart: always
     volumes:
-      - static:/app/static/
-      - media:/app/media/
+      - static_value:/app/static/
+      - media_value:/app/media/
     depends_on:
       - db
     env_file:
       - ./.env
 
   frontend:
-    build: stixaxa/foodgram_frontend:latest
+    build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - backend
 
       
   nginx:
@@ -33,15 +36,19 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
 
+      - ../frontend/build:/usr/share/nginx/html/
+
+      - ../docs/:/usr/share/nginx/html/api/docs/
+
       - static_value:/var/html/static/
 
       - media_value:/var/html/media/
 
     depends_on:
       - backend
-      - frontend
 
 volumes:
   static_value:
   media_value:
   postgresql_value:
+  frontend_value:

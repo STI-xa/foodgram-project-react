@@ -13,10 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='t$(78ef=#zbvr^0_3lpfgmbtr0feo-6dzz
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+# ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*'), '*']
 
 # CORS_ORIGIN_ALLOW_ALL = True
 # CORS_URLS_REGEX = r'^/api/.*$'
@@ -96,8 +92,12 @@ WSGI_APPLICATION = 'foodgram_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
 
@@ -161,8 +161,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 6,
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 6,
 
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
