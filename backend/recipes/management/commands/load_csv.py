@@ -9,8 +9,7 @@ from recipes.models import Ingredient
 def get_reader(file_name: str):
     csv_path = os.path.join(settings.BASE_DIR, './data/', file_name)
     csv_file = open(csv_path, 'r', encoding='utf-8')
-    reader = csv.reader(csv_file, delimiter=',')
-    return reader
+    return csv.reader(csv_file, delimiter=',')
 
 
 class Command(BaseCommand):
