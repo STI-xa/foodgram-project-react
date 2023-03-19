@@ -1,13 +1,14 @@
 from django.db.models import F
 from django.shortcuts import get_object_or_404
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from drf_extra_fields.fields import Base64ImageField
-from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from drf_extra_fields.fields import Base64ImageField
+
+from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 from users.models import Subscribe, User
 from users.validators import validate_username
 
@@ -135,14 +136,14 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = data['ingredients']
-        ingredients_list = []
+        ingredients_set = set()
         for ingredient in ingredients:
             ingredient_id = get_object_or_404(Ingredient, id=ingredient['id'])
-            if ingredient_id in ingredients_list:
+            if ingredient_id in ingredients_set:
                 raise serializers.ValidationError({
                     'Ингредиенты не должны повторяться!'
                 })
-            ingredients_list.append(ingredient_id)
+            ingredients_set.append(ingredient_id)
             amount = ingredient['amount']
             if int(amount) <= 0:
                 raise serializers.ValidationError({
@@ -154,13 +155,10 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'Нужно добавить хотя бы один тэг!'
             })
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'Тэги не должны повторяться!'
-                })
-            tags_list.append(tag)
+        if len(tags) > len(set(tags)):
+            raise serializers.ValidationError({
+                'Тэги не должны повторяться!'
+            })
 
         cooking_time = data['cooking_time']
         if int(cooking_time) <= 0:

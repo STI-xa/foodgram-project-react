@@ -2,13 +2,10 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
@@ -16,6 +13,8 @@ from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeListSerializer,
                           RecipeSerializer, ShortRecipeSerializer,
                           TagSerializer)
+from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -55,8 +54,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Favourite, request.user, pk)
-        else:
-            return self.delete_from(Favourite, request.user, pk)
+        return self.delete_from(Favourite, request.user, pk)
 
     @action(
         detail=True,
@@ -66,8 +64,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.add_to(ShoppingCart, request.user, pk)
-        else:
-            return self.delete_from(ShoppingCart, request.user, pk)
+        return self.delete_from(ShoppingCart, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():

@@ -1,6 +1,8 @@
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (
+    MaxValueValidator, MinValueValidator, RegexValidator)
 from django.db import models
 from django.db.models import UniqueConstraint
+
 from users.models import User
 
 
@@ -83,9 +85,8 @@ class Recipe(models.Model):
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         validators=(
-            MinValueValidator(
-                1, message='Время должно быть больше 1 минуты'
-            ),
+            MinValueValidator(1, message='Время должно быть больше 1 минуты'),
+            MaxValueValidator(4320, message='Максимальное время 4320 минут')
         ),
     )
     pub_date = models.DateTimeField(
@@ -117,9 +118,8 @@ class IngredientAmount(models.Model):
     amount = models.PositiveSmallIntegerField(
         'Количество',
         validators=(
-            MinValueValidator(
-                0, message='Количество не должно быть 0!'
-            ),
+            MinValueValidator(0, message='Количество не должно быть 0!'),
+            MaxValueValidator(1000, message='Максимальное количество 1000')
         ),
     )
 
