@@ -1,14 +1,13 @@
 from django.db.models import F
 from django.shortcuts import get_object_or_404
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from drf_extra_fields.fields import Base64ImageField
+from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
-from djoser.serializers import UserCreateSerializer, UserSerializer
-from drf_extra_fields.fields import Base64ImageField
-
-from recipes.models import (Favourite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
 from users.models import Subscribe, User
 from users.validators import validate_username
 
