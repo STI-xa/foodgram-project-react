@@ -52,4 +52,3 @@ volumes:
   static_value:
   media_value:
   postgresql_value:
-  frontend_value:
