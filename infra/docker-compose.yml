@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: stixaxa/foodgram_backend:latest
+    image: stixaxa/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
