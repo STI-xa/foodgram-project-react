@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    build: ../backend
+    image: stixaxa/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    build: ../frontend
+    image: stixaxa/foodgram_backend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
