@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', default='t$(78ef=#zbvr^0_3lpfgmbtr0feo-6dzz!ky-2t9(k^9^%a9g')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['158.160.55.121']
 # ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*'), '*']
