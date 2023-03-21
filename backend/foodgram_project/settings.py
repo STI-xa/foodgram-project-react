@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='t$(78ef=#zbvr^0_3lpfgmbtr0feo-6dzz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['158.160.55.121']
 # ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*'), '*']
 
 # CORS_ORIGIN_ALLOW_ALL = True
