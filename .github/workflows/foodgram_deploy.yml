@@ -75,10 +75,11 @@ jobs:
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           sudo docker compose up -d --build
-          sudo docker-compose exec -T backend python manage.py makemigrations
-          sudo docker-compose exec -T backend python manage.py migrate
-          sudo docker-compose exec -T backend python manage.py load_csv
-          sudo docker-compose exec -T backend python manage.py collectstatic --no-input
+          sudo docker compose exec -T backend python manage.py makemigrations
+          sudo docker compose exec -T backend python manage.py migrate
+          sudo docker compose exec -T backend python manage.py load_csv
+          sudo docker compose exec -T backend python manage.py collectstatic --no-input
+          docker compose exec -T backend python manage.py dumpdata > fixtures.json
 
   send_message:
     runs-on: ubuntu-latest
