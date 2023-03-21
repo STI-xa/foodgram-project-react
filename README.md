@@ -2,7 +2,7 @@
 
 **Foodgram_project** - Продуктовый помощник или сайт, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Сервис «Список покупок» позволит пользователям создавать список продуктов, которые нужно купить для приготовления выбранных блюд, с возможностью скачать файл .txt со списком продуктов.
 ___
-## **Проект доступен по адресу 158.160.55.121**
+**Проект доступен по [здесь](158.160.55.121)**
 
 ___
 ## **Что внутри**:
@@ -158,6 +158,7 @@ ___
 * ![image](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 * ![image](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
 * ![image](https://img.shields.io/badge/django%20rest-ff1709?style=for-the-badge&logo=django&logoColor=white)
-* ![image](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+* ![image](https://img.shields.io/badge/Djoser-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 * ![image](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 * ![image](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)
+* ![image] https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
