@@ -141,7 +141,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'Ингредиенты не должны повторяться!'
                 })
-            ingredients_set.append(ingredient_id)
+            ingredients_set.add(ingredient_id)
             amount = ingredient['amount']
             if int(amount) <= 0:
                 raise serializers.ValidationError({
