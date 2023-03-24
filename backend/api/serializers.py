@@ -40,11 +40,10 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        if self.context.get('request').user.is_anonymous:
-            return False
-        return Subscribe.objects.select_related(
-            'author'
-        ).exists()
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return Subscribe.objects.select_related('author').exists()
+        return False
 
 
 class IngredientSerializer(serializers.ModelSerializer):
