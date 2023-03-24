@@ -8,14 +8,13 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
-from users.models import Subscribe, User
 
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeListSerializer,
                           RecipeSerializer, ShortRecipeSerializer,
-                          SubscribeSerializer, TagSerializer)
+                          TagSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,37 +55,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return self.add_to(Favourite, request.user, pk)
         return self.delete_from(Favourite, request.user, pk)
-
-    def subscriptions(self, request):
-        queryset = User.objects.filter(subscribing__user=request.user)
-        page = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(page, many=True,
-                                         context={'request': request})
-        return self.get_paginated_response(serializer.data)
-
-    @action(
-        detail=True,
-        methods=['post', 'delete'],
-        permission_classes=(IsAuthenticated,)
-    )
-    def subscribe(self, request, **kwargs):
-        author = get_object_or_404(User, id=kwargs['pk'])
-
-        if request.method == 'POST':
-            serializer = SubscribeSerializer(
-                author, data=request.data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            Subscribe.objects.create(user=request.user, author=author)
-            return Response(serializer.data,
-                            status=status.HTTP_201_CREATED)
-
-        if request.method == 'DELETE':
-            get_object_or_404(Subscribe, user=request.user,
-                              author=author).delete()
-            return Response({f'Вы успешно отписались от {author}'},
-                            status=status.HTTP_204_NO_CONTENT)
-        return Response({'Неподдерживаемый метод запроса.'},
-                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(
         detail=True,
