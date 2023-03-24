@@ -12,9 +12,12 @@ from rest_framework.response import Response
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (CustomUserSerializer, IngredientSerializer,
-                          RecipeListSerializer, RecipeSerializer,
-                          ShortRecipeSerializer, TagSerializer)
+from .serializers import (
+    SubscribeSerializer, IngredientSerializer,
+    RecipeListSerializer,
+    RecipeSerializer, ShortRecipeSerializer,
+    TagSerializer)
+from users.models import User, Subscribe
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,15 +59,34 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.add_to(Favourite, request.user, pk)
         return self.delete_from(Favourite, request.user, pk)
 
+    def subscriptions(self, request):
+        queryset = User.objects.filter(subscribing__user=request.user)
+        page = self.paginate_queryset(queryset)
+        serializer = SubscribeSerializer(page, many=True,
+                                         context={'request': request})
+        return self.get_paginated_response(serializer.data)
+
     @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=[IsAuthenticated]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=(IsAuthenticated,)
     )
-    def subscribed_authors(self, request):
-        subscribed_authors = request.user.subscribing.all()
-        serializer = CustomUserSerializer(subscribed_authors, many=True)
-        return Response(serializer.data)
+    def subscribe(self, request, **kwargs):
+        author = get_object_or_404(User, id=kwargs['pk'])
+
+        if request.method == 'POST':
+            serializer = SubscribeSerializer(
+                author, data=request.data, context={'request': request})
+            serializer.is_valid(raise_exception=True)
+            Subscribe.objects.create(user=request.user, author=author)
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED)
+
+        if request.method == 'DELETE':
+            get_object_or_404(Subscribe, user=request.user,
+                              author=author).delete()
+            return Response({f'Вы успешно отписались от {author}'},
+                            status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
