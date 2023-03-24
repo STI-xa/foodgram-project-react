@@ -85,6 +85,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                               author=author).delete()
             return Response({f'Вы успешно отписались от {author}'},
                             status=status.HTTP_204_NO_CONTENT)
+        return Response({'Неподдерживаемый метод запроса.'},
+                        status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     @action(
         detail=True,
