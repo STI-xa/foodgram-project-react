@@ -12,9 +12,11 @@ from rest_framework.response import Response
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (IngredientSerializer, RecipeListSerializer,
-                          RecipeSerializer, ShortRecipeSerializer,
-                          TagSerializer)
+from .serializers import (
+    CustomUserSerializer, IngredientSerializer,
+    RecipeListSerializer,
+    RecipeSerializer, ShortRecipeSerializer,
+    TagSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -55,6 +57,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return self.add_to(Favourite, request.user, pk)
         return self.delete_from(Favourite, request.user, pk)
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated]
+    )
+    def subscribed_authors(self, request):
+        subscribed_authors = request.user.subscribing.all()
+        serializer = CustomUserSerializer(subscribed_authors, many=True)
+        return Response(serializer.data)
 
     @action(
         detail=True,
