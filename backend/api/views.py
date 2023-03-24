@@ -12,11 +12,9 @@ from rest_framework.response import Response
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from .serializers import (
-    CustomUserSerializer, IngredientSerializer,
-    RecipeListSerializer,
-    RecipeSerializer, ShortRecipeSerializer,
-    TagSerializer)
+from .serializers import (CustomUserSerializer, IngredientSerializer,
+                          RecipeListSerializer, RecipeSerializer,
+                          ShortRecipeSerializer, TagSerializer)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
