@@ -48,5 +48,5 @@ class CustomUserViewSet(UserViewSet):
     def subscriptions(self, request):
         subscriptions = Subscribe.objects.filter(user=request.user)
         authors = [s.author for s in subscriptions]
-        serializer = CustomUserSerializer(authors, many=True)
+        serializer = SubscribeSerializer(authors, many=True)
         return Response(serializer.data)
