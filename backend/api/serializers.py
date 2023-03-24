@@ -240,6 +240,13 @@ class SubscribeSerializer(CustomUserSerializer):
             )
         return data
 
+    def get_is_subscribed(self, obj):
+        return (
+            self.context.get('request').user.is_authenticated
+            and Subscribe.objects.filter(user=self.context['request'].user,
+                                         author=obj).exists()
+        )
+
     @staticmethod
     def get_recipes_count(obj):
         return Recipe.objects.select_related('recipe').count()
