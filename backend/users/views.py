@@ -45,7 +45,7 @@ class CustomUserViewSet(UserViewSet):
         detail=False,
         permission_classes=[IsAuthenticated]
     )
-    def subscribtions(self, request):
+    def subscriptions(self, request):
         user = request.user
         queryset = User.objects.filter(subscribing__user=user)
         pages = self.paginate_queryset(queryset)
