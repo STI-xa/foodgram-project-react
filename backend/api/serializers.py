@@ -43,7 +43,7 @@ class CustomUserSerializer(UserSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return Subscribe.objects.filter(user=user, author=obj).exists()
+        return Subscribe.objects.filter(user=user, author=obj.id).exists()
 
 
 class IngredientSerializer(serializers.ModelSerializer):
