@@ -40,8 +40,7 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request and request.user.is_authenticated:
+        if self.context.get('request').user.is_authenticated:
             return Subscribe.objects.select_related('author').exists()
         return False
 
@@ -218,17 +217,13 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 
 class SubscribeSerializer(CustomUserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = SerializerMethodField(read_only=True)
+    recipes = SerializerMethodField(read_only=True)
 
-    class Meta:
-        model = User
-        fields = ('email', 'id',
-                  'username', 'first_name',
-                  'last_name', 'is_subscribed',
-                  'recipes', 'recipes_count')
-
+    class Meta(CustomUserSerializer.Meta):
+        fields = CustomUserSerializer.Meta.fields + (
+            'recipes_count', 'recipes'
+        )
         read_only_fields = fields
 
     def validate(self, data):
@@ -244,13 +239,6 @@ class SubscribeSerializer(CustomUserSerializer):
             )
         return data
 
-    def get_is_subscribed(self, obj):
-        return (
-            self.context.get('request').user.is_authenticated
-            and Subscribe.objects.filter(user=self.context['request'].user,
-                                         author=obj).exists()
-        )
-
     @staticmethod
     def get_recipes_count(obj):
         return Recipe.objects.select_related('recipe').count()
@@ -261,4 +249,5 @@ class SubscribeSerializer(CustomUserSerializer):
         recipes_limit = request.GET.get('recipes_limit')
         if recipes_limit:
             recipes = recipes[:int(recipes_limit)]
-        return ShortRecipeSerializer(recipes, many=True).data
+        serializer = ShortRecipeSerializer(recipes, many=True, read_only=True)
+        return serializer.data
