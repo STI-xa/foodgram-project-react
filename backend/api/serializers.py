@@ -40,10 +40,9 @@ class CustomUserSerializer(UserSerializer):
         )
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Subscribe.objects.filter(user=user, author=obj.id).exists()
+        if self.context.get('request').user.is_authenticated:
+            return Subscribe.objects.select_related('author').exists()
+        return False
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -242,11 +241,11 @@ class SubscribeSerializer(CustomUserSerializer):
 
     @staticmethod
     def get_recipes_count(obj):
-        return Recipe.objects.select_related('recipe').count()
+        return Recipe.objects.select_related('author').count()
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        recipes = Recipe.objects.all()
+        recipes = Recipe.objects.recipes.filter(author=obj)
         recipes_limit = request.GET.get('recipes_limit')
         if recipes_limit:
             recipes = recipes[:int(recipes_limit)]
