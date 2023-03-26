@@ -232,11 +232,11 @@ class SubscribeSerializer(CustomUserSerializer):
         user = self.context.get('request').user
         if Subscribe.objects.filter(author=author, user=user).exists():
             raise ValidationError(
-                detail='Вы уже подписаны на этого пользователя!'
+                'Вы уже подписаны на этого пользователя!'
             )
         if user == author:
             raise ValidationError(
-                detail='Вы не можете подписаться на самого себя!'
+                'Вы не можете подписаться на самого себя!'
             )
         return data
 
@@ -245,10 +245,10 @@ class SubscribeSerializer(CustomUserSerializer):
         return Recipe.objects.select_related('author').count()
 
     def get_recipes(self, obj):
-        # request = self.context.get('request')
-        # limit = request.GET.get('recipes_limit')
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
         recipes = Recipe.objects.filter(author=obj)
-        # if limit:
-        #     recipes = recipes[:int(limit)]
+        if limit:
+            recipes = recipes[:int(limit)]
         serializer = ShortRecipeSerializer(recipes, many=True, read_only=True)
         return serializer.data
