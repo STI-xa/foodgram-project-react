@@ -218,25 +218,25 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 
 class SubscribeSerializer(CustomUserSerializer):
-    recipes_count = SerializerMethodField(read_only=True)
-    recipes = SerializerMethodField(read_only=True)
+    recipes_count = SerializerMethodField()
+    recipes = SerializerMethodField()
 
     class Meta(CustomUserSerializer.Meta):
         fields = CustomUserSerializer.Meta.fields + (
             'recipes_count', 'recipes'
         )
-        read_only_fields = fields
+        read_only_fields = ('email', 'username')
 
     def validate(self, data):
         author = self.instance
         user = self.context.get('request').user
         if Subscribe.objects.filter(author=author, user=user).exists():
             raise ValidationError(
-                'Вы уже подписаны на этого пользователя!'
+                detail='Вы уже подписаны на этого пользователя!'
             )
         if user == author:
             raise ValidationError(
-                'Вы не можете подписаться на самого себя!'
+                detail='Вы не можете подписаться на самого себя!'
             )
         return data
 
@@ -246,11 +246,9 @@ class SubscribeSerializer(CustomUserSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
         recipes = Recipe.objects.all()
-        recipes_limit = request.query_params.get('recipes_limit')
-        if recipes_limit:
-            recipes = recipes[:int(recipes_limit)]
-        return ShortRecipeSerializer(recipes, many=True).data
-
-    def get_is_subscribed(self, obj):
-        return Subscribe.objects.select_related('author').exists()
+        if limit:
+            recipes = recipes[:int(limit)]
+        serializer = ShortRecipeSerializer(recipes, many=True, read_only=True)
+        return serializer.data
