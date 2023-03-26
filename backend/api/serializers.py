@@ -250,3 +250,6 @@ class SubscribeSerializer(CustomUserSerializer):
         if recipes_limit:
             recipes = recipes[:int(recipes_limit)]
         return ShortRecipeSerializer(recipes, many=True).data
+
+    def get_is_subscribed(self, obj):
+        return Subscribe.objects.select_related('author').exists()
