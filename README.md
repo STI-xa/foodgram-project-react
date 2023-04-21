@@ -1,4 +1,3 @@
-[![foodgram_deploy](https://github.com/STI-xa/foodgram-project-react/actions/workflows/foodgram_deploy.yml/badge.svg)](https://github.com/STI-xa/foodgram-project-react/actions/workflows/foodgram_deploy.yml)
 
 **Foodgram_project** - Продуктовый помощник или сайт, на котором пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Сервис «Список покупок» позволит пользователям создавать список продуктов, которые нужно купить для приготовления выбранных блюд, с возможностью скачать файл .txt со списком продуктов.
 ___
